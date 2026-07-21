@@ -46,6 +46,28 @@ def delete_student(roll_num):
     result=manager.delete_student(roll_num)
     return jsonify(result),result["status"]
 
+@app.route("/students/department/<department>", methods = ['GET'])
+def get_department_students(department):
+    result=manager.search_students("department",department.upper())
+    return jsonify(result),result["status"]
+
+@app.route("/students/city/<city>", methods = ['GET'])
+def get_city_students(city):
+    result=manager.search_students("city",city.upper())
+    return jsonify(result),result["status"]
+
+@app.route("/students/firstname/<first_name>", methods = ['GET'])
+def get_by_firstname(first_name):
+    result=manager.search_students("first_name",first_name.upper())
+    return jsonify(result),result["status"]
+@app.route("/students/lastname/<last_name>", methods = ['GET'])
+def get_by_lastname(last_name):
+    result=manager.search_students("last_name",last_name.upper())
+    return jsonify(result),result["status"]
+@app.route("/students/age/<int:age>", methods = ['GET'])
+def get_by_age(age):
+    result=manager.search_students("age",age)
+    return jsonify(result),result["status"]
 
 if __name__ == "__main__":
     app.run(debug=True)

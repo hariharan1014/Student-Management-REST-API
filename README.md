@@ -1,40 +1,78 @@
 # Student Management REST API
 
-A simple REST API built with Flask for managing student records.
+A RESTful Student Management System built with **Python** and **Flask**. This project demonstrates CRUD operations, input validation, modular project structure, and REST API development using a text file as the data storage.
+
+---
 
 ## Features
 
-- Add Student
-- Input Validation
-- Duplicate Roll Number Check
-- File-based Storage
-- JSON Responses
-- Tested using Postman
+- Add a new student
+- View all students
+- View a student by Roll Number
+- Update student details
+- Delete a student
+- Search students by Department
+- Search students by City
+- Search students by First Name
+- Search students by Last Name
+- Search students by Age
+- Input validation
+- Duplicate Roll Number prevention
+- File-based data persistence
+- Modular project architecture
+
+---
 
 ## Technologies Used
 
-- Python
+- Python 3
 - Flask
 - REST API
 - JSON
+- File Handling
 
-## API
+---
 
-### Add Student
-
-**POST**
+## Project Structure
 
 ```
-/students
+Student-Management-API/
+│
+├── app.py
+├── management/
+│   └── management.py
+├── student/
+│   └── student.py
+├── utils/
+│   └── validation.py
+├── data/
+│   └── student_list.txt
+└── README.md
 ```
 
-### Example Request
+---
+
+# API Endpoints
+
+## Home
+
+### GET /
+
+Returns available API endpoints.
+
+---
+
+## Add Student
+
+### POST /students
+
+### Request Body
 
 ```json
 {
     "roll_num": "101",
-    "first_name": "Saba",
-    "last_name": "Joe",
+    "first_name": "Hari",
+    "last_name": "R",
     "department": "AIML",
     "age": "21",
     "city": "Trichy",
@@ -42,114 +80,53 @@ A simple REST API built with Flask for managing student records.
 }
 ```
 
-### Example Success Response
+### Success Response
+
+**201 Created**
 
 ```json
 {
     "success": true,
     "message": "Student added successfully",
     "student": {
-        "roll_num": "101",
-        "first_name": "Saba",
-        "last_name": "Joe",
-        "department": "AIML"
+        ...
     }
 }
 ```
-## API Endpoints
-
-### Home
-
-| Method | Endpoint | Description                                       |
-| ------ | -------- | ------------------------------------------------- |
-| GET    | `/`      | Displays API information and available endpoints. |
-
-### Students
-
-| Method | Endpoint    | Description                                 |
-| ------ | ----------- | ------------------------------------------- |
-| POST   | `/students` | Add a new student after validation.         |
-| GET    | `/students` | Retrieve all students stored in the system. |
 
 ---
 
-## Current Features
+## Get All Students
 
-* Add a new student (`POST /students`)
-* Retrieve all students (`GET /students`)
-* Rule-based validation using function references
-* Duplicate roll number detection
-* Automatic loading of student records from file on application startup
-* Automatic saving of student records after successful insertion
-* Object-oriented design using a `Student` model with `to_dict()` serialization
-* JSON responses with appropriate HTTP status codes
+### GET /students
+
+Returns all students.
 
 ---
-
-## Progress
-
-* ✅ POST `/students`
-* ✅ GET `/students`
-* 🔄 GET `/students/<roll_num>`
-* 🔄 PUT `/students/<roll_num>`
-* 🔄 DELETE `/students/<roll_num>`
-* 🔄 Database Integration (SQLite → PostgreSQL)
-* 🔄 SQLAlchemy ORM
-* 🔄 JWT Authentication
 
 ## Get Student by Roll Number
 
-Returns the details of a specific student using the roll number.
+### GET /students/<roll_num>
 
-### Endpoint
+Example
 
-```http
-GET /students/<roll_num>
+```
+GET /students/101
 ```
 
-### Success Response (200)
+Returns the student details if found.
 
-```json
-{
-    "success": true,
-    "status": 200,
-    "student": {
-        "roll_num": 101,
-        "first_name": "HARI",
-        "last_name": "KUMAR",
-        "department": "AIML",
-        "age": 21,
-        "city": "TRICHY",
-        "phone_num": "9876543210"
-    }
-}
-```
-
-### Error Response (404)
-
-```json
-{
-    "success": false,
-    "status": 404,
-    "message": "Student with roll number 101 does not exist"
-}
-```
+Returns **404 Not Found** if the student does not exist.
 
 ---
 
 ## Update Student
 
-Updates one or more details of an existing student.
+### PUT /students/<roll_num>
 
-> **Note:** `roll_num` cannot be modified because it is the unique identifier of a student.
+Updates one or more student fields.
 
-### Endpoint
-
-```http
-PUT /students/<roll_num>
-```
-
-### Request Body (Example)
+### Example Request
 
 ```json
 {
@@ -158,96 +135,136 @@ PUT /students/<roll_num>
 }
 ```
 
-### Success Response (200)
+### Notes
 
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Student updated successfully",
-    "student": {
-        "roll_num": 101,
-        "first_name": "HARI",
-        "last_name": "KUMAR",
-        "department": "AIML",
-        "age": 22,
-        "city": "CHENNAI",
-        "phone_num": "9876543210"
-    }
-}
-```
+- Roll Number cannot be modified.
+- Invalid fields are rejected.
+- Only provided fields are updated.
 
-### Error Responses
-
-#### Student Not Found (404)
-
-```json
-{
-    "success": false,
-    "status": 404,
-    "message": "Student with roll number 101 does not exist for update."
-}
-```
-
-#### Validation Error (400)
-
-```json
-{
-    "success": false,
-    "status": 400,
-    "message": "Age should contain numbers"
-}
-```
-
-#### Roll Number Modification Not Allowed (400)
-
-```json
-{
-    "success": false,
-    "status": 400,
-    "message": "Roll number cannot be modified."
-}
-```
-
-#### Unknown Field (400)
-
-```json
-{
-    "success": false,
-    "status": 400,
-    "message": "Unknown field: salary"
-}
-```
 ---
 
 ## Delete Student
 
-Deletes an existing student using the roll number.
+### DELETE /students/<roll_num>
 
-### Endpoint
+Deletes the specified student.
 
-```http
-DELETE /students/<roll_num>
+Returns **404 Not Found** if the student does not exist.
+
+---
+
+# Search APIs
+
+## Search by Department
+
+### GET /students/department/<department>
+
+Example
+
+```
+GET /students/department/AIML
 ```
 
-### Success Response (200)
+---
 
-```json
-{
-    "success": true,
-    "status": 200,
-    "message": "Student deleted successfully"
-}
+## Search by City
+
+### GET /students/city/<city>
+
+Example
+
+```
+GET /students/city/TRICHY
 ```
 
-### Error Response (404)
+---
 
-```json
-{
-    "success": false,
-    "status": 404,
-    "message": "Student with roll number 101 does not exist."
-}
+## Search by First Name
+
+### GET /students/firstname/<first_name>
+
+Example
+
+```
+GET /students/firstname/HARI
 ```
 
-> **Note:** Once a student is deleted, the record is permanently removed from the data file and cannot be retrieved.
+---
+
+## Search by Last Name
+
+### GET /students/lastname/<last_name>
+
+Example
+
+```
+GET /students/lastname/KUMAR
+```
+
+---
+
+## Search by Age
+
+### GET /students/age/<age>
+
+Example
+
+```
+GET /students/age/21
+```
+
+---
+
+# Validation
+
+The application validates:
+
+- Required fields
+- Integer values
+- String values
+- Phone number format
+- Duplicate Roll Number
+- Unknown fields during update
+- Roll Number modification restriction
+
+---
+
+# Data Storage
+
+Student records are stored in
+
+```
+data/student_list.txt
+```
+
+The application automatically loads records on startup and saves changes after every Create, Update, and Delete operation.
+
+---
+
+# Future Improvements
+
+- SQLite / PostgreSQL database integration
+- SQLAlchemy ORM
+- Pagination
+- Authentication & Authorization
+- Logging
+- Unit Testing
+- Docker Support
+- Deployment
+
+---
+
+# Learning Outcomes
+
+This project demonstrates:
+
+- Flask fundamentals
+- REST API development
+- CRUD operations
+- Object-Oriented Programming
+- Modular Python architecture
+- File handling
+- Data validation
+- Dynamic attribute handling using `getattr()` and `setattr()`
+- JSON request/response handling
+- HTTP status codes

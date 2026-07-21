@@ -137,3 +137,19 @@ class Management:
                 "status" : 404,
                 "message" : f"Student with roll number {roll_num} does not exist for delete."
             }
+    def search_students(self,field,value):
+        result=[]
+        for student in self.students:
+            student_value = getattr(student, field)
+            if student_value == value:
+                result.append(student.to_dict())
+        if not result:
+            return {
+                "success" : False,
+                "status" : 404,
+                "message": f"No students found for {field} '{value}'."
+            }
+        return { "success" : True,
+                 "status" : 200,
+            "students" : result
+                 }
