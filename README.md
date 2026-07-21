@@ -218,3 +218,36 @@ PUT /students/<roll_num>
     "message": "Unknown field: salary"
 }
 ```
+---
+
+## Delete Student
+
+Deletes an existing student using the roll number.
+
+### Endpoint
+
+```http
+DELETE /students/<roll_num>
+```
+
+### Success Response (200)
+
+```json
+{
+    "success": true,
+    "status": 200,
+    "message": "Student deleted successfully"
+}
+```
+
+### Error Response (404)
+
+```json
+{
+    "success": false,
+    "status": 404,
+    "message": "Student with roll number 101 does not exist."
+}
+```
+
+> **Note:** Once a student is deleted, the record is permanently removed from the data file and cannot be retrieved.

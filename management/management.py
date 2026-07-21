@@ -92,7 +92,7 @@ class Management:
                     return {
                         "success" : False,
                         "status" : 400,
-                        "Unknown field" : key
+                        "Unknown field" : f"Unknown field: {key}"
                     }
             for key in data:
                 if key == "roll_num":
@@ -121,4 +121,19 @@ class Management:
                 "success" : False,
                 "status" : 404,
                 "message" : f"Student with roll number {roll_num} does not exist for update."
+            }
+    def delete_student(self,roll_num):
+        student=self.find_student_by_roll_num(roll_num)
+        if student is not None:
+            self.students.remove(student)
+            self.save_file()
+            return { "success" : True,
+                     "status" : 200,
+                     "message" : "Student deleted successfully"
+                     }
+        else:
+            return {
+                "success" : False,
+                "status" : 404,
+                "message" : f"Student with roll number {roll_num} does not exist for delete."
             }

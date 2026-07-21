@@ -12,6 +12,8 @@ def home():
         "message" : "Welcome to the home page",
         "contents" : "/students POST for add students \n"
                      "/students GET for display students \n"
+                     "/students/<roll_num> GET for one student \n"
+                     "/students PUT for update student \n"
     })
 
 @app.route("/students" , methods = ['POST'])
@@ -37,6 +39,11 @@ def update_student(roll_num):
     if not data:
         return jsonify({"message": "No data found"}), 400
     result=manager.update_student(data,roll_num)
+    return jsonify(result),result["status"]
+
+@app.route("/students/<int:roll_num>", methods = ['DELETE'])
+def delete_student(roll_num):
+    result=manager.delete_student(roll_num)
     return jsonify(result),result["status"]
 
 
