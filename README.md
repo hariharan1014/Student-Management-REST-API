@@ -96,3 +96,125 @@ A simple REST API built with Flask for managing student records.
 * 🔄 Database Integration (SQLite → PostgreSQL)
 * 🔄 SQLAlchemy ORM
 * 🔄 JWT Authentication
+
+## Get Student by Roll Number
+
+Returns the details of a specific student using the roll number.
+
+### Endpoint
+
+```http
+GET /students/<roll_num>
+```
+
+### Success Response (200)
+
+```json
+{
+    "success": true,
+    "status": 200,
+    "student": {
+        "roll_num": 101,
+        "first_name": "HARI",
+        "last_name": "KUMAR",
+        "department": "AIML",
+        "age": 21,
+        "city": "TRICHY",
+        "phone_num": "9876543210"
+    }
+}
+```
+
+### Error Response (404)
+
+```json
+{
+    "success": false,
+    "status": 404,
+    "message": "Student with roll number 101 does not exist"
+}
+```
+
+---
+
+## Update Student
+
+Updates one or more details of an existing student.
+
+> **Note:** `roll_num` cannot be modified because it is the unique identifier of a student.
+
+### Endpoint
+
+```http
+PUT /students/<roll_num>
+```
+
+### Request Body (Example)
+
+```json
+{
+    "city": "Chennai",
+    "age": "22"
+}
+```
+
+### Success Response (200)
+
+```json
+{
+    "success": true,
+    "status": 200,
+    "message": "Student updated successfully",
+    "student": {
+        "roll_num": 101,
+        "first_name": "HARI",
+        "last_name": "KUMAR",
+        "department": "AIML",
+        "age": 22,
+        "city": "CHENNAI",
+        "phone_num": "9876543210"
+    }
+}
+```
+
+### Error Responses
+
+#### Student Not Found (404)
+
+```json
+{
+    "success": false,
+    "status": 404,
+    "message": "Student with roll number 101 does not exist for update."
+}
+```
+
+#### Validation Error (400)
+
+```json
+{
+    "success": false,
+    "status": 400,
+    "message": "Age should contain numbers"
+}
+```
+
+#### Roll Number Modification Not Allowed (400)
+
+```json
+{
+    "success": false,
+    "status": 400,
+    "message": "Roll number cannot be modified."
+}
+```
+
+#### Unknown Field (400)
+
+```json
+{
+    "success": false,
+    "status": 400,
+    "message": "Unknown field: salary"
+}
+```

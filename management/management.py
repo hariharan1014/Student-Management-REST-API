@@ -84,3 +84,41 @@ class Management:
                 "status" : 404,
                 "message" : f"Student with roll number {roll_num} does not exist"
                 }
+    def update_student(self,data,roll_num):
+        student=self.find_student_by_roll_num(roll_num)
+        if student is not None:
+            for key in data:
+                if key not in self.rules:
+                    return {
+                        "success" : False,
+                        "status" : 400,
+                        "Unknown field" : key
+                    }
+            for key in data:
+                if key == "roll_num":
+                    return {
+                            "success": False,
+                            "status": 400,
+                            "message": "Roll number cannot be modified."
+                            }
+                if key in self.rules:
+                    checker=self.rules[key]
+                    result,message=checker(data[key])
+                    if  not result:
+                        return {"success" : False,
+                                "status" : 400,
+                                "message" : message
+                           }
+            student.update(data)
+            self.save_file()
+            return { "success" : True,
+                     "status" : 200,
+                     "message" : "Student updated successfully",
+                     "student": student.to_dict()
+                     }
+        else:
+            return {
+                "success" : False,
+                "status" : 404,
+                "message" : f"Student with roll number {roll_num} does not exist for update."
+            }

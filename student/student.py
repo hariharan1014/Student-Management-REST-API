@@ -7,6 +7,16 @@ class Student:
         self.age = int(str(age).strip())
         self.city = city.upper().strip()
         self.phone_num = str(phone_num).strip()
+
+        self.formatters={
+            "roll_num": format_int,
+            "first_name": format_str,
+            "last_name": format_str,
+            "department": format_str,
+            "age": format_int,
+            "city": format_str,
+            "phone_num": format_str
+        }
     def to_dict(self):
         return {
             "roll_num":self.roll_num,
@@ -17,3 +27,13 @@ class Student:
             "city":self.city,
             "phone_num":self.phone_num
         }
+    def update(self,data):
+        for key in data:
+            formatter=self.formatters[key]
+            formatted_value = formatter(data[key])
+            setattr(self, key,formatted_value)
+
+def format_int(value):
+    return int(str(value).strip())
+def format_str(value):
+    return str(value).strip().upper()

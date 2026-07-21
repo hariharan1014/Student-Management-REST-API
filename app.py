@@ -31,6 +31,13 @@ def get_students():
 def get_student(roll_num):
     result=manager.get_student_by_roll_num(roll_num)
     return jsonify(result),result["status"]
+@app.route("/students/<int:roll_num>", methods = ['PUT'])
+def update_student(roll_num):
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "No data found"}), 400
+    result=manager.update_student(data,roll_num)
+    return jsonify(result),result["status"]
 
 
 if __name__ == "__main__":
