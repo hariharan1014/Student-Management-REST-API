@@ -6,4 +6,14 @@ class Student:
         self.department = department.upper().strip()
         self.age = int(str(age).strip())
         self.city = city.upper().strip()
-        self.phone_num = int(str(phone_num).strip())
+        self.phone_num = str(phone_num).strip()
+    def to_dict(self):
+        return {
+            "roll_num":self.roll_num,
+            "first_name":self.first_name,
+            "last_name":self.last_name,
+            "department":self.department,
+            "age":self.age,
+            "city":self.city,
+            "phone_num":self.phone_num
+        }

@@ -44,18 +44,15 @@ class Management:
                     "status" : 409,
                     "message" : duplicate_check_msg
                 }
-            self.students.append(Student(data['roll_num'],data['first_name'],data['last_name'],data['department'],
-                                         data['age'],data['city'],data['phone_num']))
+            std=Student(data['roll_num'],data['first_name'],data['last_name'],data['department'],
+                                         data['age'],data['city'],data['phone_num'])
+            self.students.append(std)
             self.save_file()
+            dictionary=std.to_dict()
             return { "success" : True,
                         "message" : f"Student added successfully",
                         "status" : 201,
-                        "student":{
-                        "department" : data['department'].strip(),
-                        "last_name": data['last_name'].strip(),
-                        "first_name": data['first_name'].strip(),
-                        "roll_num": data['roll_num'].strip(),
-                                }
+                        "student": dictionary
                     }
     def validate_data(self,data):
         for key in self.rules:
@@ -71,3 +68,8 @@ class Management:
             if roll_num == student.roll_num:
                 return  False, f"Student with roll number {student.roll_num} already exists"
         return True,None
+    def get_students(self):
+        return { "success" : True,
+                "status" : 200,
+                "students" : [student.to_dict() for student in self.students]
+        }
