@@ -27,6 +27,11 @@ def get_students():
     result=manager.get_students()
     return jsonify(result)
 
+@app.route("/students/<int:roll_num>", methods = ['GET'])
+def get_student(roll_num):
+    result=manager.get_student_by_roll_num(roll_num)
+    return jsonify(result),result["status"]
+
 
 if __name__ == "__main__":
     app.run(debug=True)

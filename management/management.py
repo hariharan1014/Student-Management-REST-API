@@ -37,12 +37,12 @@ class Management:
                     "status" : 400,
                     "message" : message
                 }
-            valid,duplicate_check_msg= self.is_duplicate_roll_num(int(data["roll_num"]))
-            if not valid:
+            found= self.find_student_by_roll_num(int(data["roll_num"]))
+            if found:
                 return {
                     "success" :False,
                     "status" : 409,
-                    "message" : duplicate_check_msg
+                    "message" :f"Student with roll number {data['roll_num']} already exists"
                 }
             std=Student(data['roll_num'],data['first_name'],data['last_name'],data['department'],
                                          data['age'],data['city'],data['phone_num'])
@@ -63,13 +63,24 @@ class Management:
             if not valid:
                 return  False, message
         return True,None
-    def is_duplicate_roll_num(self,roll_num):
+    def find_student_by_roll_num(self,roll_num):
         for student in self.students:
             if roll_num == student.roll_num:
-                return  False, f"Student with roll number {student.roll_num} already exists"
-        return True,None
+                return  student
+        return None
     def get_students(self):
         return { "success" : True,
                 "status" : 200,
                 "students" : [student.to_dict() for student in self.students]
         }
+    def get_student_by_roll_num(self,roll_num):
+        student=self.find_student_by_roll_num(roll_num)
+        if student is not None:
+                return {"success": True,
+                        "status": 200,
+                        "student": student.to_dict()
+                        }
+        return {"success": False,
+                "status" : 404,
+                "message" : f"Student with roll number {roll_num} does not exist"
+                }
