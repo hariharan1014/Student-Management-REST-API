@@ -1,19 +1,23 @@
-from flask import Flask,request,jsonify
+from flask import Flask, jsonify, request
 from management.management import Management
-
-
 manager=Management()
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return jsonify({ "status" : 200,
-        "message" : "Welcome to the home page",
-        "contents" : "/students POST for add students \n"
-                     "/students GET for display students \n"
-                     "/students/<roll_num> GET for one student \n"
-                     "/students PUT for update student \n"
+    return jsonify({
+  "project": "Student Management REST API",
+  "version": "1.0",
+  "author": "Hariharan.R",
+  "available_routes": [
+      { "POST" : "/students",
+        "GET" : "/students",
+        "get" : "/students/filterby(department,age,city,firstname,lastname)",
+        "PUT" : "/students",
+        "DELETE" : "/students"
+       }
+  ]
     })
 
 @app.route("/students" , methods = ['POST'])
@@ -46,27 +50,15 @@ def delete_student(roll_num):
     result=manager.delete_student(roll_num)
     return jsonify(result),result["status"]
 
-@app.route("/students/department/<department>", methods = ['GET'])
-def get_department_students(department):
-    result=manager.search_students("department",department.upper())
-    return jsonify(result),result["status"]
+@app.route("/students/sort/<field>", methods = ['GET'])
+def sort_field(field):
+    result=manager.sort_students(field)
+    return jsonify(result), result["status"]
 
-@app.route("/students/city/<city>", methods = ['GET'])
-def get_city_students(city):
-    result=manager.search_students("city",city.upper())
-    return jsonify(result),result["status"]
-
-@app.route("/students/firstname/<first_name>", methods = ['GET'])
-def get_by_firstname(first_name):
-    result=manager.search_students("first_name",first_name.upper())
-    return jsonify(result),result["status"]
-@app.route("/students/lastname/<last_name>", methods = ['GET'])
-def get_by_lastname(last_name):
-    result=manager.search_students("last_name",last_name.upper())
-    return jsonify(result),result["status"]
-@app.route("/students/age/<int:age>", methods = ['GET'])
-def get_by_age(age):
-    result=manager.search_students("age",age)
+@app.route("/students/filter", methods = ['GET'])
+def filter_field():
+    filters=request.args.to_dict()
+    result=manager.filter_students(filters)
     return jsonify(result),result["status"]
 
 if __name__ == "__main__":

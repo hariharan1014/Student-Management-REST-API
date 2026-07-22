@@ -1,4 +1,4 @@
-from student.student import Student
+from student.student import Student,format_int,format_str
 from utils.validation import check_int,check_str,check_phone
 class Management:
     def __init__(self,file='data/student_list.txt'):
@@ -153,3 +153,58 @@ class Management:
                  "status" : 200,
             "students" : result
                  }
+    def sort_students(self,field):
+        if  field not in self.rules:
+            return {
+                "success" : False,
+                "status" : 400,
+                "message" : f"Unknown field: {field}"
+            }
+        elif field == "phone_num":
+            return {
+                "success" : False,
+                "status" : 400,
+                "message" : "access restricted to phone number."
+            }
+
+        sorted_object=sorted(
+            self.students,
+            key=lambda student: getattr(student, field)
+        )
+        result = [student.to_dict() for student in sorted_object]
+        return { "success" : True,
+                 "status" : 200,
+                 "students" : result
+                 }
+    def filter_students(self,filters):
+        for field in filters:
+            if field not in self.rules:
+                return {
+                    "success" : False,
+                    "status" : 400,
+                    "message" : f"Unknown field: {field}"
+                }
+        result=[]
+        for student in self.students:
+            match=True
+            for field,value in filters.items():
+                if field == "roll_num" or field == "age":
+                    formatted_value=format_int(value)
+                else:
+                    formatted_value=format_str(value)
+                if getattr(student,field) != formatted_value :
+                    match=False
+                    break
+            if match:
+                result.append(student.to_dict())
+        if not result:
+            return {
+                "success": False,
+                "status": 404,
+                "students": []
+            }
+        return { "success" : True,
+                 "status" : 200,
+                 "students" : result
+            }
+

@@ -89,7 +89,7 @@ Returns available API endpoints.
     "success": true,
     "message": "Student added successfully",
     "student": {
-        ...
+        
     }
 }
 ```
