@@ -1,29 +1,30 @@
-# Student Management REST API
+# Student Management REST API (Flask)
 
-A RESTful Student Management System built with **Python** and **Flask**. This project demonstrates CRUD operations, input validation, modular project structure, and REST API development using a text file as the data storage.
+A RESTful Student Management API built using **Python** and **Flask**.
+
+This project demonstrates CRUD operations, validation, filtering, sorting, pagination, modular project structure, and file-based persistence without using a database.
 
 ---
 
 ## Features
 
-- Add a new student
-- View all students
-- View a student by Roll Number
-- Update student details
-- Delete a student
-- Search students by Department
-- Search students by City
-- Search students by First Name
-- Search students by Last Name
-- Search students by Age
-- Input validation
-- Duplicate Roll Number prevention
-- File-based data persistence
-- Modular project architecture
+- Add Student
+- View All Students
+- View Student by Roll Number
+- Update Student Details
+- Delete Student
+- Sort Students
+- Filter Students
+- Pagination
+- Input Validation
+- File Storage
+- Modular Project Structure
+- Proper HTTP Status Codes
+- JSON Responses
 
 ---
 
-## Technologies Used
+## Tech Stack
 
 - Python 3
 - Flask
@@ -36,29 +37,53 @@ A RESTful Student Management System built with **Python** and **Flask**. This pr
 ## Project Structure
 
 ```
-Student-Management-API/
+StudentManagement REST API/
 │
 ├── app.py
+│
 ├── management/
 │   └── management.py
+│
 ├── student/
 │   └── student.py
+│
 ├── utils/
 │   └── validation.py
+│
 ├── data/
 │   └── student_list.txt
-└── README.md
+│
+├── README.md
+└── .gitignore
 ```
+
+---
+
+# Student Model
+
+Each student contains:
+
+| Field | Type |
+|---------|------|
+| roll_num | Integer |
+| first_name | String |
+| last_name | String |
+| department | String |
+| age | Integer |
+| city | String |
+| phone_num | String |
 
 ---
 
 # API Endpoints
 
+---
+
 ## Home
 
 ### GET /
 
-Returns available API endpoints.
+Returns project information and available routes.
 
 ---
 
@@ -66,33 +91,25 @@ Returns available API endpoints.
 
 ### POST /students
 
+Creates a new student.
+
 ### Request Body
 
 ```json
 {
-    "roll_num": "101",
+    "roll_num": 101,
     "first_name": "Hari",
-    "last_name": "R",
-    "department": "AIML",
-    "age": "21",
-    "city": "Trichy",
+    "last_name": "Joe",
+    "department": "ECE",
+    "age": 22,
+    "city": "Chennai",
     "phone_num": "9876543210"
 }
 ```
 
-### Success Response
+### Success
 
 **201 Created**
-
-```json
-{
-    "success": true,
-    "message": "Student added successfully",
-    "student": {
-        
-    }
-}
-```
 
 ---
 
@@ -100,7 +117,11 @@ Returns available API endpoints.
 
 ### GET /students
 
-Returns all students.
+Returns every student.
+
+### Success
+
+**200 OK**
 
 ---
 
@@ -114,9 +135,17 @@ Example
 GET /students/101
 ```
 
-Returns the student details if found.
+### Success
 
-Returns **404 Not Found** if the student does not exist.
+**200 OK**
+
+Returns the requested student.
+
+### Error
+
+**404 Not Found**
+
+Student does not exist.
 
 ---
 
@@ -124,22 +153,31 @@ Returns **404 Not Found** if the student does not exist.
 
 ### PUT /students/<roll_num>
 
-Updates one or more student fields.
+Example
 
-### Example Request
+```
+PUT /students/101
+```
+
+Only the fields you want to modify need to be sent.
+
+Example
 
 ```json
 {
-    "city": "Chennai",
-    "age": "22"
+    "city": "Coimbatore",
+    "age": 23
 }
 ```
 
-### Notes
+### Success
 
-- Roll Number cannot be modified.
-- Invalid fields are rejected.
-- Only provided fields are updated.
+**200 OK**
+
+### Possible Errors
+
+- 400 Bad Request
+- 404 Not Found
 
 ---
 
@@ -147,124 +185,173 @@ Updates one or more student fields.
 
 ### DELETE /students/<roll_num>
 
-Deletes the specified student.
+Example
 
-Returns **404 Not Found** if the student does not exist.
+```
+DELETE /students/101
+```
+
+### Success
+
+**200 OK**
+
+### Error
+
+**404 Not Found**
 
 ---
 
-# Search APIs
+# Sorting
 
-## Search by Department
+Sort students using any supported field.
 
-### GET /students/department/<department>
+### GET
+
+```
+/students/sort/first_name
+```
+
+```
+/students/sort/last_name
+```
+
+```
+/students/sort/department
+```
+
+```
+/students/sort/city
+```
+
+```
+/students/sort/age
+```
+
+### Success
+
+**200 OK**
+
+### Error
+
+**400 Bad Request**
+
+Unknown field.
+
+---
+
+# Filtering
+
+Filter students using one or multiple query parameters.
 
 Example
 
 ```
-GET /students/department/AIML
+GET /students/filter?department=ECE
 ```
-
----
-
-## Search by City
-
-### GET /students/city/<city>
 
 Example
 
 ```
-GET /students/city/TRICHY
+GET /students/filter?department=ECE&city=CHENNAI
 ```
-
----
-
-## Search by First Name
-
-### GET /students/firstname/<first_name>
 
 Example
 
 ```
-GET /students/firstname/HARI
+GET /students/filter?department=ECE&city=CHENNAI&age=22
 ```
+
+### Success
+
+**200 OK**
+
+### Error
+
+**400 Bad Request**
+
+Unknown filter field.
 
 ---
 
-## Search by Last Name
+# Pagination
 
-### GET /students/lastname/<last_name>
+Retrieve students page by page.
 
 Example
 
 ```
-GET /students/lastname/KUMAR
+GET /students?page=1&limit=5
 ```
-
----
-
-## Search by Age
-
-### GET /students/age/<age>
 
 Example
 
 ```
-GET /students/age/21
+GET /students?page=2&limit=5
 ```
+
+### Success
+
+**200 OK**
+
+Returns only the requested page.
+
+---
+
+# HTTP Status Codes Used
+
+| Code | Meaning |
+|------|---------|
+|200|Success|
+|201|Created|
+|400|Bad Request|
+|404|Not Found|
+|409|Conflict|
 
 ---
 
 # Validation
 
-The application validates:
+The project validates:
 
-- Required fields
-- Integer values
-- String values
-- Phone number format
-- Duplicate Roll Number
-- Unknown fields during update
-- Roll Number modification restriction
-
----
-
-# Data Storage
-
-Student records are stored in
-
-```
-data/student_list.txt
-```
-
-The application automatically loads records on startup and saves changes after every Create, Update, and Delete operation.
-
----
-
-# Future Improvements
-
-- SQLite / PostgreSQL database integration
-- SQLAlchemy ORM
-- Pagination
-- Authentication & Authorization
-- Logging
-- Unit Testing
-- Docker Support
-- Deployment
+- Roll Number
+- First Name
+- Last Name
+- Department
+- Age
+- City
+- Phone Number
 
 ---
 
 # Learning Outcomes
 
-This project demonstrates:
+This project helped me understand:
 
-- Flask fundamentals
-- REST API development
-- CRUD operations
+- Flask Routing
+- REST API Design
+- CRUD Operations
+- JSON Handling
+- Input Validation
+- File Handling
+- Modular Project Structure
 - Object-Oriented Programming
-- Modular Python architecture
-- File handling
-- Data validation
-- Dynamic attribute handling using `getattr()` and `setattr()`
-- JSON request/response handling
-- HTTP status codes
+- Search Logic
+- Sorting
+- Filtering
+- Pagination
+- Proper HTTP Response Codes
+- Clean Code Refactoring
+
+---
+
+# Future Improvements
+
+- SQLite Integration
+- PostgreSQL Integration
+- SQLAlchemy ORM
+- Authentication (JWT)
+- Password Hashing
+- Logging
+- Unit Testing
+- Docker
+- Deployment

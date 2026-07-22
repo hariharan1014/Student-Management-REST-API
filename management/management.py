@@ -208,3 +208,19 @@ class Management:
                  "students" : result
             }
 
+    def pagination(self,page,limit):
+        start=(page-1)*limit
+        end=start+limit
+        result=[]
+        for student in self.students[start:end]:
+            result.append(student.to_dict())
+        if not result:
+            return {
+                "success" : True,
+                "status" : 200,
+                "students" : []
+            }
+        return { "success" : True,
+                 "status" : 200,
+                 "students" : result
+                 }
